@@ -2,6 +2,8 @@ package com.thoughtmechanix.licenses.services;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import com.thoughtmechanix.licenses.clients.OrganizationDiscoveryClient;
+import com.thoughtmechanix.licenses.clients.OrganizationFeignClient;
 import com.thoughtmechanix.licenses.clients.OrganizationRestTemplateClient;
 import com.thoughtmechanix.licenses.config.ServiceConfig;
 import com.thoughtmechanix.licenses.model.License;
@@ -30,6 +32,13 @@ public class LicenseService {
 
     @Autowired
     OrganizationRestTemplateClient organizationRestClient;
+
+
+    @Autowired
+    OrganizationFeignClient organizationFeignClient;
+
+    @Autowired
+    OrganizationDiscoveryClient organizationDiscoveryClient;
 
     private static final Logger logger = LoggerFactory.getLogger(LicenseService.class);
 
@@ -66,6 +75,42 @@ public class LicenseService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private Organization retrieveOrgInfo(String organizationId, String clientType){
+        Organization organization = null;
+
+        switch (clientType) {
+            case "feign":
+                System.out.println("I am using the feign client");
+                organization = organizationFeignClient.getOrganization(organizationId);
+                break;
+            case "rest":
+                System.out.println("I am using the rest client");
+                organization = organizationRestClient.getOrganization(organizationId);
+                break;
+            case "discovery":
+                System.out.println("I am using the discovery client");
+                organization = organizationDiscoveryClient.getOrganization(organizationId);
+                break;
+            default:
+                organization = organizationRestClient.getOrganization(organizationId);
+        }
+
+        return organization;
+    }
+
+    public License getLicense(String organizationId,String licenseId, String clientType) {
+        License license = licenseRepository.findByOrganizationIdAndLicenseId(organizationId, licenseId);
+
+        Organization org = retrieveOrgInfo(organizationId, clientType);
+
+        return license
+                .withOrganizationName( org.getName())
+                .withContactName( org.getContactName())
+                .withContactEmail( org.getContactEmail() )
+                .withContactPhone( org.getContactPhone() )
+                .withComment(config.getExampleProperty());
     }
 
 
