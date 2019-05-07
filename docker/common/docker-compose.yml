@@ -1,11 +1,11 @@
 version: '2'
 services:
   eurekaserver:
-   image:   johncarnell/tmx-eurekasvr:chapter6
+   image:   ccr.ccs.tencentyun.com/monoy/tmx-eurekasvr:1.0
    ports:
        - "8761:8761"
   configserver:
-    image: johncarnell/tmx-confsvr:chapter6
+    image: ccr.ccs.tencentyun.com/monoy/tmx-confsvr:1.0
     ports:
        - "8888:8888"
     environment:
@@ -13,7 +13,7 @@ services:
        EUREKASERVER_PORT: 8761
        ENCRYPT_KEY:       "IMSYMMETRIC"
   zuulserver:
-    image: johncarnell/tmx-zuulsvr:chapter6
+    image: ccr.ccs.tencentyun.com/monoy/tmx-zuulsvr:1.0
     ports:
       - "5555:5555"
     environment:
@@ -34,7 +34,7 @@ services:
       - POSTGRES_PASSWORD=p0stgr@s
       - POSTGRES_DB=eagle_eye_local
   licensingservice:
-    image: johncarnell/tmx-licensing-service:chapter6
+    image: ccr.ccs.tencentyun.com/monoy/tmx-licensing-service:1.0
     ports:
       - "8080:8080"
     environment:
@@ -49,7 +49,7 @@ services:
       ZUULSERVER_PORT:          "5555"
       ENCRYPT_KEY:       "IMSYMMETRIC"
   organizationservice:
-    image: johncarnell/tmx-organization-service:chapter6
+    image: ccr.ccs.tencentyun.com/monoy/tmx-organization-service:1.0
     ports:
       - "8085:8085"
     environment:
@@ -62,7 +62,7 @@ services:
       CONFIGSERVER_PORT:        "8888"
       ENCRYPT_KEY:       "IMSYMMETRIC"
   orgservice-new:
-    image: johncarnell/tmx-orgservice-new:chapter6
+    image: ccr.ccs.tencentyun.com/monoy/tmx-orgservice-new:1.0
     ports:
       - "8087:8087"
     environment:
@@ -75,7 +75,7 @@ services:
       CONFIGSERVER_PORT:        "8888"
       ENCRYPT_KEY:       "IMSYMMETRIC"
   specialroutes-service:
-    image: johncarnell/tmx-specialroutes-service:chapter6
+    image: ccr.ccs.tencentyun.com/monoy/tmx-specialroutes-service:1.0
     ports:
       - "8910:8910"
     environment:
